@@ -7,10 +7,6 @@ metadata:
     description: Raincatcher
     iconClass: icon-nodejs
     tags: instant-app,sync,mobile-service
-    template.openshift.io/long-description: Raincatcher by FeedHenry.
-    template.openshift.io/provider-display-name: FeedHenry
-    template.openshift.io/documentation-url: http://raincatcher.feedhenry.io/docs/
-    template.openshift.io/support-url: https://github.com/feedhenry/raincatcher/issues
 labels:
   template: raincatcher
 parameters:
@@ -20,7 +16,7 @@ parameters:
     from: "[a-zA-Z0-9]{40}"
   - name: MONGODB_USER_NAME
     description: Username for the created MongoDB user.
-    value: "sync-user"
+    value: "raincatcher-user"
   - name: MONGODB_USER_PASSWORD
     description: Password for the created MongoDB user. This value will be generated if not specified.
     generate: expression
@@ -44,32 +40,20 @@ objects:
     sessionAffinity: None
     type: ClusterIP
 
-- apiVersion: build.openshift.io/v1
-    kind: Build
-    metadata:
-      annotations:
-        openshift.io/build-config.name: raincatch-server
-        openshift.io/build.number: '1'
-        openshift.io/build.pod-name: raincatch-server-1-build
-      creationTimestamp: '2017-11-20T10:49:48Z'
-      labels:
-        app: raincatch-server
-        buildconfig: raincatch-server
-        openshift.io/build-config.name: raincatch-server
-        openshift.io/build.start-policy: Serial
-      name: raincatch-server-1
-      namespace: raincatcher
-      ownerReferences:
-        - apiVersion: build.openshift.io/v1
-          controller: true
-          kind: BuildConfig
-          name: raincatch-server
-          uid: 872c3390-cde0-11e7-a3d1-c85b76bc1d61
-      resourceVersion: '3163'
-      selfLink: /apis/build.openshift.io/v1/namespaces/raincatcher/builds/raincatch-server-1
-      uid: 8739afcc-cde0-11e7-a3d1-c85b76bc1d61
+- apiVersion: apps/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      app: raincatcher-server
+      buildconfig: raincatcher-server
+      openshift.io/build-config.name: raincatcher-server
+      openshift.io/build.start-policy: Serial
+    name: raincatcher-server
+    namespace: raincatcher
+  spec:
+    replicas: 1
+    nodeSelector: null
     spec:
-      nodeSelector: null
       containers:
         - name: raincatcher
           env:
@@ -83,30 +67,12 @@ objects:
               secretKeyRef:
                 key: database-password
                 name: mongodb
-      output:
-        pushSecret:
-          name: builder-dockercfg-6n22j
-        to:
-          kind: ImageStreamTag
-          name: 'raincatch-server:latest'
       ports:
       - containerPort: 8001
         protocol: TCP
         targetPort: 8001
       postCommit: {}
       resources: {}
-      revision:
-        git:
-          author:
-            email: paolohaji@gmail.com
-            name: Paolo Bueno
-          commit: 0b9e9c50d4ec26013d4a3aab44a6eaf408a7e06d
-          committer:
-            email: paolohaji@gmail.com
-            name: Paolo Bueno
-          message: Add @types/passport to fix compilation issues
-        type: Git
-      serviceAccount: builder
       source:
         git:
           ref: master
@@ -118,7 +84,7 @@ objects:
             kind: DockerImage
             name: >-
               centos/nodejs-6-centos7@sha256:1780c230672455c09c286b193125560e373e07b1089268541bfe8d87e87a1d3b
-        type: Source
+        type: RollingUpdate
       triggeredBy:
         - imageChangeBuild:
             fromRef:
