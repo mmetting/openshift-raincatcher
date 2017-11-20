@@ -1,0 +1,84 @@
+apiVersion: build.openshift.io/v1
+kind: Build
+metadata:
+  annotations:
+    openshift.io/build-config.name: raincatch-server
+    openshift.io/build.number: '1'
+    openshift.io/build.pod-name: raincatch-server-1-build
+  creationTimestamp: '2017-11-20T10:49:48Z'
+  labels:
+    app: raincatch-server
+    buildconfig: raincatch-server
+    openshift.io/build-config.name: raincatch-server
+    openshift.io/build.start-policy: Serial
+  name: raincatch-server-1
+  namespace: raincatcher
+  ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: BuildConfig
+      name: raincatch-server
+      uid: 872c3390-cde0-11e7-a3d1-c85b76bc1d61
+  resourceVersion: '3163'
+  selfLink: /apis/build.openshift.io/v1/namespaces/raincatcher/builds/raincatch-server-1
+  uid: 8739afcc-cde0-11e7-a3d1-c85b76bc1d61
+spec:
+  nodeSelector: null
+  output:
+    pushSecret:
+      name: builder-dockercfg-6n22j
+    to:
+      kind: ImageStreamTag
+      name: 'raincatch-server:latest'
+  postCommit: {}
+  resources: {}
+  revision:
+    git:
+      author:
+        email: paolohaji@gmail.com
+        name: Paolo Bueno
+      commit: 0b9e9c50d4ec26013d4a3aab44a6eaf408a7e06d
+      committer:
+        email: paolohaji@gmail.com
+        name: Paolo Bueno
+      message: Add @types/passport to fix compilation issues
+    type: Git
+  serviceAccount: builder
+  source:
+    git:
+      ref: master
+      uri: 'https://github.com/feedhenry-raincatcher/raincatcher-server.git'
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: DockerImage
+        name: >-
+          centos/nodejs-6-centos7@sha256:1780c230672455c09c286b193125560e373e07b1089268541bfe8d87e87a1d3b
+    type: Source
+  triggeredBy:
+    - imageChangeBuild:
+        fromRef:
+          kind: ImageStreamTag
+          name: 'nodejs:6'
+          namespace: openshift
+        imageID: >-
+          centos/nodejs-6-centos7@sha256:1780c230672455c09c286b193125560e373e07b1089268541bfe8d87e87a1d3b
+      message: Image change
+status:
+  config:
+    kind: BuildConfig
+    name: raincatch-server
+    namespace: raincatcher
+  output: {}
+  outputDockerImageReference: '172.30.1.1:5000/raincatcher/raincatch-server:latest'
+  phase: Running
+  stages:
+    - durationMilliseconds: 1374
+      name: FetchInputs
+      startTime: '2017-11-20T10:49:50Z'
+      steps:
+        - durationMilliseconds: 1374
+          name: FetchGitSource
+          startTime: '2017-11-20T10:49:50Z'
+  startTimestamp: '2017-11-20T10:49:48Z'
