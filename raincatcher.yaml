@@ -1,18 +1,18 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: fh-sync-server
+  name: raincatcher
   annotations:
-    openshift.io/display-name: FeedHenry Sync (Persistent)
-    description: FeedHenry Sync Server
+    openshift.io/display-name: Raincatcher
+    description: Raincatcher
     iconClass: icon-nodejs
     tags: instant-app,sync,mobile-service
-    template.openshift.io/long-description: Data Synchronisation by FeedHenry.
+    template.openshift.io/long-description: Raincatcher by FeedHenry.
     template.openshift.io/provider-display-name: FeedHenry
-    template.openshift.io/documentation-url: https://github.com/feedhenry/fh-sync-server
-    template.openshift.io/support-url: https://github.com/feedhenry/fh-sync-server/issues
+    template.openshift.io/documentation-url: http://raincatcher.feedhenry.io/docs/
+    template.openshift.io/support-url: https://github.com/feedhenry/raincatcher/issues
 labels:
-  template: fh-sync-server
+  template: raincatcher
 parameters:
   - name: MONGODB_ADMIN_PASSWORD
     description: Password for the MongoDB admin user. This value will be generated if not specified.
@@ -29,30 +29,115 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    name: fh-sync-server
+    name: raincatcher
     labels:
-      app: fh-sync-server
-      template: fh-sync-server
+      app: raincatcher
+      template: raincatcher
   spec:
     ports:
-    - name: fh-sync-server
-      port: 3000
+    - name: raincatcher
+      port: 8001
       protocol: TCP
-      targetPort: 3000
+      targetPort: 8001
     selector:
-      run: fh-sync-server
+      run: raincatcher
     sessionAffinity: None
     type: ClusterIP
+
+- apiVersion: build.openshift.io/v1
+    kind: Build
+    metadata:
+      annotations:
+        openshift.io/build-config.name: raincatch-server
+        openshift.io/build.number: '1'
+        openshift.io/build.pod-name: raincatch-server-1-build
+      creationTimestamp: '2017-11-20T10:49:48Z'
+      labels:
+        app: raincatch-server
+        buildconfig: raincatch-server
+        openshift.io/build-config.name: raincatch-server
+        openshift.io/build.start-policy: Serial
+      name: raincatch-server-1
+      namespace: raincatcher
+      ownerReferences:
+        - apiVersion: build.openshift.io/v1
+          controller: true
+          kind: BuildConfig
+          name: raincatch-server
+          uid: 872c3390-cde0-11e7-a3d1-c85b76bc1d61
+      resourceVersion: '3163'
+      selfLink: /apis/build.openshift.io/v1/namespaces/raincatcher/builds/raincatch-server-1
+      uid: 8739afcc-cde0-11e7-a3d1-c85b76bc1d61
+    spec:
+      nodeSelector: null
+      containers:
+        - name: raincatcher
+          env:
+          - name: MONGODB_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: mongodb
+          - name: MONGODB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: mongodb
+      output:
+        pushSecret:
+          name: builder-dockercfg-6n22j
+        to:
+          kind: ImageStreamTag
+          name: 'raincatch-server:latest'
+      ports:
+      - containerPort: 8001
+        protocol: TCP
+        targetPort: 8001
+      postCommit: {}
+      resources: {}
+      revision:
+        git:
+          author:
+            email: paolohaji@gmail.com
+            name: Paolo Bueno
+          commit: 0b9e9c50d4ec26013d4a3aab44a6eaf408a7e06d
+          committer:
+            email: paolohaji@gmail.com
+            name: Paolo Bueno
+          message: Add @types/passport to fix compilation issues
+        type: Git
+      serviceAccount: builder
+      source:
+        git:
+          ref: master
+          uri: 'https://github.com/feedhenry-raincatcher/raincatcher-server.git'
+        type: Git
+      strategy:
+        sourceStrategy:
+          from:
+            kind: DockerImage
+            name: >-
+              centos/nodejs-6-centos7@sha256:1780c230672455c09c286b193125560e373e07b1089268541bfe8d87e87a1d3b
+        type: Source
+      triggeredBy:
+        - imageChangeBuild:
+            fromRef:
+              kind: ImageStreamTag
+              name: 'nodejs:6'
+              namespace: openshift
+            imageID: >-
+              centos/nodejs-6-centos7@sha256:1780c230672455c09c286b193125560e373e07b1089268541bfe8d87e87a1d3b
+          message: Image change
 
 - apiVersion: v1
   kind: Service
   metadata:
     annotations:
-      template.openshift.io/expose-name: "fh-sync-server"
-      template.openshift.io/expose-type: "fh-sync-server"
+      template.openshift.io/expose-name: "raincatcher"
+      template.openshift.io/expose-type: "raincatcher"
     labels:
-      app: fh-sync-server
-      template: fh-sync-server
+      app: raincatcher
+      template: raincatcher
     name: mongodb
   spec:
     ports:
@@ -70,8 +155,8 @@ objects:
   metadata:
     name: redis
     labels:
-      app: fh-sync-server
-      template: fh-sync-server
+      app: raincatcher
+      template: raincatcher
   spec:
     ports:
     - port: 6379
@@ -86,63 +171,8 @@ objects:
   kind: Deployment
   metadata:
     labels:
-      app: fh-sync-server
-      template: fh-sync-server
-    name: fh-sync-server
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
-        run: fh-sync-server
-    strategy:
-      activeDeadlineSeconds: 21600
-      rollingParams:
-        intervalSeconds: 1
-        maxSurge: 25%
-        maxUnavailable: 25%
-        timeoutSeconds: 600
-        updatePeriodSeconds: 1
-      type: RollingUpdate
-    template:
-      metadata:
-        labels:
-          run: fh-sync-server
-      spec:
-        containers:
-        - name: fh-sync-server
-          env:
-          - name: MONGODB_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: mongodb
-          - name: MONGODB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: database-password
-                name: mongodb
-          image: feedhenry/fh-sync-server
-          imagePullPolicy: Always
-          ports:
-          - containerPort: 3000
-            protocol: TCP
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        schedulerName: default-scheduler
-        securityContext: {}
-        terminationGracePeriodSeconds: 30
-    test: false
-    triggers:
-    - type: ConfigChange
-
-- apiVersion: apps/v1beta1
-  kind: Deployment
-  metadata:
-    labels:
-      app: fh-sync-server
-      template: fh-sync-server
+      app: raincatcher
+      template: raincatcher
     name: mongodb
   spec:
     replicas: 1
@@ -242,8 +272,8 @@ objects:
   kind: Deployment
   metadata:
     labels:
-      app: fh-sync-server
-      template: fh-sync-server
+      app: raincatcher
+      template: raincatcher
       run: redis
     name: redis
   spec:
@@ -288,18 +318,18 @@ objects:
   metadata:
     annotations:
       template.openshift.io/expose-uri: "https://{.spec.host}{.spec.path}"
-    name: fh-sync-server
+    name: raincatcher
     labels:
-      app: fh-sync-server
-      template: fh-sync-server
+      app: raincatcher
+      template: raincatcher
   spec:
     port:
-      targetPort: fh-sync-server
+      targetPort: raincatcher
     tls:
       termination: edge
     to:
       kind: Service
-      name: fh-sync-server
+      name: raincatcher
     wildcardPolicy: None
 
 - apiVersion: v1
@@ -310,8 +340,8 @@ objects:
     database-user: ${MONGODB_USER_NAME}
   metadata:
     labels:
-      app: fh-sync-server
-      template: fh-sync-server
+      app: raincatcher
+      template: raincatcher
     name: mongodb
   type: Opaque
 - apiVersion: v1
@@ -319,8 +349,8 @@ objects:
   metadata:
     name: mongodb
     labels:
-      app: fh-sync-server
-      template: fh-sync-server
+      app: raincatcher
+      template: raincatcher
   spec:
     accessModes:
     - ReadWriteOnce
