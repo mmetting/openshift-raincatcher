@@ -6,7 +6,7 @@ metadata:
     openshift.io/display-name: Raincatcher
     description: Raincatcher
     iconClass: icon-nodejs
-    tags: instant-app,sync,mobile-service
+    tags: instant-app,raincatcher,mobile-service
 labels:
   template: raincatcher
 parameters:
@@ -40,60 +40,157 @@ objects:
     sessionAffinity: None
     type: ClusterIP
 
-- apiVersion: apps/v1beta1
-  kind: Deployment
+- apiVersion: "v1"
+  kind: BuildConfig
   metadata:
     labels:
+      app: raincatcher
+      template: raincatcher
+    name: raincatcher
+  spec:
+    triggers: 
+    - type: "GitHub"
+    - type: "ImageChange"
+    source: 
+      type: "Git"
+      git:
+        uri: "https://github.com/feedhenry-raincatcher/raincatcher-server.git"
+        ref: "master"
+      contextDir: "app/dir"
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
       app: raincatcher-server
-      buildconfig: raincatcher-server
-      openshift.io/build-config.name: raincatcher-server
-      openshift.io/build.start-policy: Serial
+      name: raincatcher-server
     name: raincatcher-server
-    namespace: raincatcher
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: raincatcher-server
+      name: raincatcher-server
+    name: raincatcher-server
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: raincatcher-server:latest
+    postCommit: {}
+    resources: {}
+    source:
+      git:
+        uri: https://github.com/feedhenry-raincatcher/raincatcher-server.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: nodejs:6
+          namespace: openshift
+      type: Source
+    triggers:
+    - github:
+        secret: dMRcuYXdb4j9OapPXR-l
+      type: GitHub
+    - generic:
+        secret: nm26q1wD3XF-ACXYaLtc
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: raincatcher-server
+      name: raincatcher-server
+    name: raincatcher-server
   spec:
     replicas: 1
-    nodeSelector: null
-    spec:
-      containers:
-        - name: raincatcher
-          env:
-          - name: MONGODB_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: mongodb
-          - name: MONGODB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: database-password
-                name: mongodb
-      ports:
-      - containerPort: 8001
-        protocol: TCP
-        targetPort: 8001
-      postCommit: {}
+    selector:
+      app: raincatcher-server
+      deploymentconfig: raincatcher-server
+      name: raincatcher-server
+    strategy:
       resources: {}
-      source:
-        git:
-          ref: master
-          uri: 'https://github.com/feedhenry-raincatcher/raincatcher-server.git'
-        type: Git
-      strategy:
-        sourceStrategy:
-          from:
-            kind: DockerImage
-            name: >-
-              centos/nodejs-6-centos7@sha256:1780c230672455c09c286b193125560e373e07b1089268541bfe8d87e87a1d3b
-        type: RollingUpdate
-      triggeredBy:
-        - imageChangeBuild:
-            fromRef:
-              kind: ImageStreamTag
-              name: 'nodejs:6'
-              namespace: openshift
-            imageID: >-
-              centos/nodejs-6-centos7@sha256:1780c230672455c09c286b193125560e373e07b1089268541bfe8d87e87a1d3b
-          message: Image change
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: raincatcher-server
+          deploymentconfig: raincatcher-server
+          name: raincatcher-server
+      spec:
+        containers:
+        - image: raincatcher-server:latest
+          name: raincatcher-server
+          ports:
+          - containerPort: 8001
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - raincatcher-server
+        from:
+          kind: ImageStreamTag
+          name: raincatcher-server:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: raincatcher-server
+      name: raincatcher-server
+    name: raincatcher-server
+  spec:
+    ports:
+    - name: 8001-tcp
+      port: 8001
+      protocol: TCP
+      targetPort: 8001
+    selector:
+      app: raincatcher-server
+      deploymentconfig: raincatcher-server
+      name: raincatcher-server
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
 
 - apiVersion: v1
   kind: Service
