@@ -24,4 +24,4 @@ Import yaml/json
 Select raincatcher.json and continue 
 Mongo, redis and raincatcher-server will be deployed. 
 
-[This is a alt text](./openshift-deploy.gif)
+![This is a alt text](./openshift-deploy.gif)
