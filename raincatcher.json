@@ -15,25 +15,6 @@
   "labels": {
     "template": "raincatcher"
   },
-  "parameters": [
-    {
-      "name": "MONGODB_ADMIN_PASSWORD",
-      "description": "Password for the MongoDB admin user. This value will be generated if not specified.",
-      "generate": "expression",
-      "from": "[a-zA-Z0-9]{40}"
-    },
-    {
-      "name": "MONGODB_USER_NAME",
-      "description": "Username for the created MongoDB user.",
-      "value": "raincatcheruser"
-    },
-    {
-      "name": "MONGODB_USER_PASSWORD",
-      "description": "Password for the created MongoDB user. This value will be generated if not specified.",
-      "generate": "expression",
-      "from": "[a-zA-Z0-9]{40}"
-    }
-  ],
   "objects": [
     {
       "kind": "ImageStream",
@@ -194,15 +175,23 @@
                           "env": [
                             {
                               "name": "MONGODB_USER",
-                              "value": "${MONGODB_USER}"
+                              "value": "user"
                             },
                             {
                               "name": "MONGODB_PASSWORD",
-                              "value": "${MONGODB_PASSWORD}"
+                              "value": "password"
+                            },
+                            {
+                              "name": "MONGODB_DATABASE",
+                              "value": "raincatcher"
+                            },
+                            {
+                              "name": "MONGODB_ADMIN_PASSWORD",
+                              "value": "adminpassword"
                             },
                             {
                               "name": "MONGO_CONNECTION_URL",
-                              "value": "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb.raincatcher.svc:27017/raincatcher"
+                              "value": "mongodb://user:password@mongodb.raincatcher.svc:27017/raincatcher"
                             },
                             {
                               "name": "REDIS_PORT",
@@ -378,34 +367,19 @@
                 "env": [
                   {
                     "name": "MONGODB_USER",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "key": "database-user",
-                        "name": "mongodb"
-                      }
-                    }
+                    "value": "user"
                   },
                   {
                     "name": "MONGODB_PASSWORD",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "key": "database-password",
-                        "name": "mongodb"
-                      }
-                    }
-                  },
-                  {
-                    "name": "MONGODB_ADMIN_PASSWORD",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "key": "database-admin-password",
-                        "name": "mongodb"
-                      }
-                    }
+                    "value": "password"
                   },
                   {
                     "name": "MONGODB_DATABASE",
                     "value": "raincatcher"
+                  },
+                  {
+                    "name": "MONGODB_ADMIN_PASSWORD",
+                    "value": "adminpassword"
                   }
                 ],
                 "image": "centos/mongodb-32-centos7@sha256:aa37993c3be2d4731db79c0c7aba11db3e9352b1adc586c7e9054f57808789c0",
