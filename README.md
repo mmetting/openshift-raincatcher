@@ -12,7 +12,7 @@ The following commands can be run from ``deploy.sh``
 - Login to Openshift ``oc login -u developer -p pasword-goes-here``
 - Create project call raincatcher `` oc new-project raincatcher --display-name="Raincatcher"``
 - Switch to project ``oc project raincatcher``
-- Use raincatcher.json to deploy raincatcher-server, mongo and redis ``oc create -f raincatcher.json``
+- Use raincatcher.json to deploy raincatcher-server, mongo and redis ``oc new-app -f raincatcher.json``
 
 
 ## Deploying using GUI

@@ -13,4 +13,4 @@ oc new-project raincatcher --display-name="Raincatcher"
 oc project raincatcher
 
 # deploy the file
-oc create -f raincatcher.json
+oc new-app -f raincatcher.json
