@@ -1,8 +1,10 @@
-# Using this template
+# Raincatcher Openshift Template
+
+## Using this template
 
 This template is used to deploy raincatcher-server to Openshift using the a s2i json file.
 
-## Deploying Raincatcher-server, mongo and redis on Openshift using CLI
+### Deploying Raincatcher-server, mongo and redis on Openshift using CLI
 
 - Clone https://github.com/austincunningham/openshift-raincatcher
 - cd to openshift-raincatcher
@@ -15,7 +17,7 @@ The following commands can be run from ``deploy.sh``
 - Use raincatcher.json to deploy raincatcher-server, mongo and redis ``oc new-app -f raincatcher.json``
 
 
-## Deploying using GUI
+### Deploying using GUI
 
 Create a project called `raincatcher` in Openshift
 
