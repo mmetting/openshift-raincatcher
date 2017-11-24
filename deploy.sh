@@ -7,7 +7,7 @@ oc cluster up
 oc login -u developer -p developer
 
 # create project called raincatcher
-oc new-project raincatcher --display-name="Raincatcher"
+oc new-project raincatcher --display-name="raincatcher"
 
 # change to the raincatcher project
 oc project raincatcher

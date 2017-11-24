@@ -547,22 +547,23 @@
         "annotations": {
           "template.openshift.io/expose-uri": "https://{.spec.host}{.spec.path}"
         },
-        "name": "raincatcher",
+        "name": "raincatcher-server",
+        "namespace": "raincatcher",
         "labels": {
-          "app": "raincatcher",
+          "app": "raincatcher-server",
+          "name": "raincatcher-server",
           "template": "raincatcher"
         }
       },
       "spec": {
+        "host": "raincatcher-server-raincatcher.127.0.0.1.nip.io",
         "port": {
-          "targetPort": "raincatcher"
-        },
-        "tls": {
-          "termination": "edge"
+          "targetPort": "8001-tcp"
         },
         "to": {
           "kind": "Service",
-          "name": "raincatcher"
+          "name": "raincatcher-server",
+          "weight": 100
         },
         "wildcardPolicy": "None"
       }
