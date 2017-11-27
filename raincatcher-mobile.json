@@ -7,10 +7,10 @@
             "kind": "ImageStream",
             "apiVersion": "v1",
             "metadata": {
-                "name": "raincatcher-portal",
+                "name": "raincatcher-mobile",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "raincatcher-portal"
+                    "app": "raincatcher-mobile"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "OpenShiftNewApp"
@@ -29,10 +29,10 @@
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "raincatcher-portal",
+                "name": "raincatcher-mobile",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "raincatcher-portal"
+                    "app": "raincatcher-mobile"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "OpenShiftNewApp"
@@ -63,7 +63,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/austincunningham/raincatcher-portal.git",
+                        "uri": "https://github.com/austincunningham/raincatcher-mobile.git",
                         "ref": "openshift"
                     }
                 },
@@ -80,7 +80,7 @@
                 "output": {
                     "to": {
                         "kind": "ImageStreamTag",
-                        "name": "raincatcher-portal:latest"
+                        "name": "raincatcher-mobile:latest"
                     }
                 },
                 "resources": {},
@@ -95,10 +95,10 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "raincatcher-portal",
+                "name": "raincatcher-mobile",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "raincatcher-portal"
+                    "app": "raincatcher-mobile"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "OpenShiftNewApp"
@@ -117,11 +117,11 @@
                         "imageChangeParams": {
                             "automatic": true,
                             "containerNames": [
-                                "raincatcher-portal"
+                                "raincatcher-mobile"
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "raincatcher-portal:latest"
+                                "name": "raincatcher-mobile:latest"
                             }
                         }
                     }
@@ -129,15 +129,15 @@
                 "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "raincatcher-portal",
-                    "deploymentconfig": "raincatcher-portal"
+                    "app": "raincatcher-mobile",
+                    "deploymentconfig": "raincatcher-mobile"
                 },
                 "template": {
                     "metadata": {
                         "creationTimestamp": null,
                         "labels": {
-                            "app": "raincatcher-portal",
-                            "deploymentconfig": "raincatcher-portal"
+                            "app": "raincatcher-mobile",
+                            "deploymentconfig": "raincatcher-mobile"
                         },
                         "annotations": {
                             "openshift.io/generated-by": "OpenShiftNewApp"
@@ -146,8 +146,8 @@
                     "spec": {
                         "containers": [
                             {
-                                "name": "raincatcher-portal",
-                                "image": "raincatcher-portal:latest",
+                                "name": "raincatcher-mobile",
+                                "image": "raincatcher-mobile:latest",
                                 "ports": [
                                     {
                                         "containerPort": 8080,
@@ -177,17 +177,17 @@
                 "openshift.io/host.generated": "true"
               },
               "labels": {
-                "app": "raincatcher-portal"
+                "app": "raincatcher-mobile"
               },
-              "name": "raincatcher-portal"
+              "name": "raincatcher-mobile"
             },
             "spec": {
               "port": {
-                "targetPort": "9003-tcp"
+                "targetPort": "9002-tcp"
               },
               "to": {
                 "kind": "Service",
-                "name": "raincatcher-portal",
+                "name": "raincatcher-mobile",
                 "weight": 100
               },
               "wildcardPolicy": "None"
@@ -197,10 +197,10 @@
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
-                "name": "raincatcher-portal",
+                "name": "raincatcher-mobile",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "raincatcher-portal"
+                    "app": "raincatcher-mobile"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "OpenShiftNewApp"
@@ -209,15 +209,15 @@
             "spec": {
                 "ports": [
                     {
-                        "name": "9003-tcp",
+                        "name": "9002-tcp",
                         "protocol": "TCP",
-                        "port": 9003,
-                        "targetPort": 9003
+                        "port": 9002,
+                        "targetPort": 9002
                     }
                 ],
                 "selector": {
-                    "app": "raincatcher-portal",
-                    "deploymentconfig": "raincatcher-portal"
+                    "app": "raincatcher-mobile",
+                    "deploymentconfig": "raincatcher-mobile"
                 }
             },
             "status": {
