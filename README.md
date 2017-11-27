@@ -29,3 +29,15 @@ Select raincatcher.json and continue
 Mongo, redis and raincatcher-server will be deployed. 
 
 ![This is a alt text](./openshift-deploy.gif)
+
+## Deploy Raincatcher Portal application
+
+Select on 'Add to project'
+
+Import yaml/json
+
+Select raincatcher-portal.json and continue
+
+once build use the follow link to access portal
+
+http://raincatcher-portal-raincatcher.127.0.0.1.nip.io/?url=http://raincatcher-server-raincatcher.127.0.0.1.nip.io#!/workorders/list
