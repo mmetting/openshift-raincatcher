@@ -2,7 +2,7 @@
 
 # Using this template
 
-This template is used to deploy raincatcher-server to Openshift using the a s2i json file.
+These templates are used to deploy RainCatcher to Openshift using the a s2i json files.
 
 ## Deploying Raincatcher on Openshift using CLI
 
