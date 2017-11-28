@@ -63,7 +63,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/austincunningham/raincatcher-mobile.git",
+                        "uri": "https://github.com/feedhenry-raincatcher/raincatcher-mobile.git",
                         "ref": "openshift"
                     }
                 },

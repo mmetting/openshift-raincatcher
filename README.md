@@ -6,7 +6,7 @@ This template is used to deploy raincatcher-server to Openshift using the a s2i 
 
 ## Deploying Raincatcher on Openshift using CLI
 
-- Clone https://github.com/austincunningham/openshift-raincatcher
+- Clone https://github.com/feedhenry-raincatcher/openshift-raincatcher.git
 - cd to openshift-raincatcher
 
 The run ``deploy.sh`` script to start openshift and deploy raincatcher
