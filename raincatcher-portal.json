@@ -63,7 +63,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/feedhenry-raincatcher/raincatcher-portal.git",
+                        "uri": "https://github.com/mmetting/raincatcher-portal.git",
                         "ref": "openshift"
                     }
                 },

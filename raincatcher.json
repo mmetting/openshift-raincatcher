@@ -406,7 +406,7 @@
                       "/bin/sh",
                       "-i",
                       "-c",
-                      "mongo 127.0.0.1:27017/$MONGODB_DATABASE -u $MONGODB_USER -p $MONGODB_PASSWORD --eval=\"quit()\""
+                      "mongo mongodb.raincatcher.svc:27017/$MONGODB_DATABASE -u $MONGODB_USER -p $MONGODB_PASSWORD --eval=\"quit()\""
                     ]
                   },
                   "failureThreshold": 3,
@@ -556,7 +556,7 @@
         }
       },
       "spec": {
-        "host": "raincatcher-server-raincatcher.127.0.0.1.nip.io",
+        "host": "raincatcher-server-raincatcher.apps.148.251.77.169.xip.io",
         "port": {
           "targetPort": "8001-tcp"
         },
